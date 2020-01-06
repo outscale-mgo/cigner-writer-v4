@@ -1,6 +1,8 @@
 #include "signer.h"
 #include <curl/curl.h>
 
+/* compilation: cc -std=gnu11 example.c -lcurl  -lcrypto -I/openssl/include/path */
+
 int main(void)
 {
 	cwv4_autofree char *r = NULL;

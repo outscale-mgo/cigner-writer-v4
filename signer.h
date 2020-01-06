@@ -115,7 +115,7 @@ static const char *cwv4_sha256_(const char *str, char *rbuf)
 {
 	unsigned char sha_digest[SHA256_DIGEST_LENGTH];
 	SHA256_CTX sha_ctx;
-	
+
 	SHA256_Init(&sha_ctx);
 	SHA256_Update(&sha_ctx, str, strlen(str));
 	SHA256_Final(sha_digest, &sha_ctx);
@@ -127,7 +127,7 @@ static const char *cwv4_sha256_(const char *str, char *rbuf)
 
 static unsigned char *cwv4_hmac_(const char *str, void *k, int kl, void *rbuf)
 {
-	HMAC_CTX hmac_ctx;
+	HMAC_CTX *hmac_ctx;
 	unsigned int hmac_sha_l;
 
 /*
@@ -135,11 +135,11 @@ static unsigned char *cwv4_hmac_(const char *str, void *k, int kl, void *rbuf)
  * so we need a C preprocessor branch here
  * with some testing on Arch Linux
  */
-	HMAC_CTX_init(&hmac_ctx);
-	HMAC_Init_ex(&hmac_ctx, k, kl, EVP_sha256(), NULL);
-	HMAC_Update(&hmac_ctx, (unsigned char *)str, strlen(str));
-	HMAC_Final(&hmac_ctx, rbuf, &hmac_sha_l);
-	HMAC_CTX_cleanup(&hmac_ctx);
+	hmac_ctx = HMAC_CTX_new();
+	HMAC_Init_ex(hmac_ctx, k, kl, EVP_sha256(), NULL);
+	HMAC_Update(hmac_ctx, (unsigned char *)str, strlen(str));
+	HMAC_Final(hmac_ctx, rbuf, &hmac_sha_l);
+	HMAC_CTX_free(hmac_ctx);
 	return rbuf;
 }
 
