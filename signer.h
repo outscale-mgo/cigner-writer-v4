@@ -129,17 +129,26 @@ static unsigned char *cwv4_hmac_(const char *str, void *k, int kl, void *rbuf)
 {
 	HMAC_CTX *hmac_ctx;
 	unsigned int hmac_sha_l;
+	/* I'm not sure what's the exact version that break this api */
+#if OPENSSL_VERSION_NUMBER < 0x10002100L
+	HMAC_CTX hmac_ctx_;
 
-/*
- * HMAC_CTX_init was rename on recent openssl,
- * so we need a C preprocessor branch here
- * with some testing on Arch Linux
- */
+	hmac_ctx = &hmac_ctx_;
+
+	HMAC_CTX_init(hmac_ctx);
+#else
 	hmac_ctx = HMAC_CTX_new();
+#endif
+
 	HMAC_Init_ex(hmac_ctx, k, kl, EVP_sha256(), NULL);
 	HMAC_Update(hmac_ctx, (unsigned char *)str, strlen(str));
 	HMAC_Final(hmac_ctx, rbuf, &hmac_sha_l);
+
+#if OPENSSL_VERSION_NUMBER < 0x10002100L
+	HMAC_CTX_cleanup(hmac_ctx);
+#else
 	HMAC_CTX_free(hmac_ctx);
+#endif
 	return rbuf;
 }
 
