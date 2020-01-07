@@ -26,7 +26,7 @@
 /* USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 /*
- * GNU C11 header only library that does V4 signature
+ * GNU C99 header only library that does V4 signature
  * rely on OpenSSL
  */
 
@@ -48,6 +48,13 @@
 #include <openssl/hmac.h>
 #include <openssl/rand.h>
 #include <openssl/conf.h>
+
+
+/* We don't want to silience out cleanup support, as it would mean leaks */
+#ifdef __attribute__
+#undef __attribute__
+#endif
+
 
 /*
   # Step 1 is to define the verb (GET, POST, etc.)--already done.
