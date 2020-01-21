@@ -113,7 +113,7 @@ static inline char *cwv4_digest_str(const unsigned char *digest, char rbuf[stati
 }
 
 #define CWV4_SPRINTF(str, fmt, args...)					\
-	if (asprintf(&str, fmt, args) < 0) { str = NULL; return NULL; }
+	if (asprintf(&str, fmt, args) < 0) { str = NULL; return 0; }
 
 #define cwv4_sha256(str)			\
 	cwv4_sha256_(str, (char[65]){0})
